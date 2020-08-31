@@ -1,6 +1,6 @@
 resource "aws_security_group" "rearc-quest-terraform-sg" {
   name = "rearc-quest-terraform-sg"
-  vpc_id = "${aws_vpc.rearc-quest-terraform-env.id}"
+  vpc_id = aws_vpc.rearc-quest-terraform-env.id
   ingress {
     from_port = 22
     to_port = 22

@@ -5,6 +5,6 @@ resource "aws_vpc" "rearc-quest-terraform-env" {
 }
 
 resource "aws_eip" "ip-rearc-quest-terraform-env" {
-  instance = "${aws_instance.rearc-quest-terraform.id}"
+  instance = aws_instance.rearc-quest-terraform.id
   vpc      = true
 }
