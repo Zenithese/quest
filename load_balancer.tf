@@ -49,18 +49,12 @@ resource "aws_lb_listener" "rearc-quest-terraform-lb-listener-3000" {
   }
 }
 
-resource "aws_iam_server_certificate" "rearc-quest-terraform-cert" {
-  name = "rearc-quest-terraform-cert"
-  certificate_body  = file("")
-  private_key       = file("")
-}
-
 resource "aws_lb_listener" "rearc-quest-terraform-lb-listener-433" {
   load_balancer_arn = aws_lb.rearc-quest-terraform-lb.arn
   port              = "433"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_iam_server_certificate.rearc-quest-terraform-cert.arn
+  certificate_arn   = aws_acm_certificate.zenithese.arn
 
   default_action {
     type             = "forward"
