@@ -1,13 +1,22 @@
 version: 0.2
 
 phases:
-  build:
-    commands:
-      - echo Build started on `date`
+    pre_build:
+        commands:
+            - echo logging in to AWS ECR...
+            - $(aws ecr get-login --no-include-email --region us-east-1)
+ 
+    build:
+        commands:
+            - echo build Docker image on `date`
+            - docker build -t rearc-quest-terraform:latest .
+            - docker tag rearc-quest-terraform:latest $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
 
-  post_build:
-    commands:
-      - echo Build completed on `date`
+    post_build:
+        commands:
+            - echo build Docker image complete `date`
+            - echo push latest Docker images to ECR...
+            - docker push $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
 
 #env:
   #variables:
