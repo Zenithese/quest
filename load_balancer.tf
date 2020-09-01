@@ -7,17 +7,24 @@ resource "aws_lb" "rearc-quest-terraform-lb" {
 }
 
 resource "aws_lb_target_group" "rearc-quest-terraform-tg" {
-  name = "rearc-quest-terraform-tg"
-  port = 80
-  protocol = "HTTP"
-  vpc_id = aws_vpc.rearc-quest-terraform-env.id
+  name      = "rearc-quest-terraform-tg"
+  port      = 80
+  protocol  = "HTTP"
+  vpc_id    = aws_vpc.rearc-quest-terraform-env.id
 }
 
 resource "aws_lb_target_group" "rearc-quest-terraform-tg-3000" {
-  name = "rearc-quest-terraform-tg-3000"
-  port = 3000
-  protocol = "HTTP"
-  vpc_id = aws_vpc.rearc-quest-terraform-env.id
+  name      = "rearc-quest-terraform-tg-3000"
+  port      = 3000
+  protocol  = "HTTP"
+  vpc_id    = aws_vpc.rearc-quest-terraform-env.id
+}
+
+resource "aws_lb_target_group" "rearc-quest-terraform-tg-433" {
+  name      = "rearc-quest-terraform-tg-433"
+  port      = 433
+  protocol  = "HTTPS"
+  vpc_id    = aws_vpc.rearc-quest-terraform-env.id
 }
 
 resource "aws_lb_listener" "rearc-quest-terraform-lb-listener" {
@@ -42,14 +49,39 @@ resource "aws_lb_listener" "rearc-quest-terraform-lb-listener-3000" {
   }
 }
 
+resource "aws_iam_server_certificate" "rearc-quest-terraform-cert" {
+  name = "rearc-quest-terraform-cert"
+  certificate_body  = file("")
+  private_key       = file("")
+}
+
+resource "aws_lb_listener" "rearc-quest-terraform-lb-listener-433" {
+  load_balancer_arn = aws_lb.rearc-quest-terraform-lb.arn
+  port              = "433"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_iam_server_certificate.rearc-quest-terraform-cert.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.rearc-quest-terraform-tg-433.arn
+  }
+}
+
 resource "aws_lb_target_group_attachment" "rearc-quest-terraform-tga" {
-  target_group_arn = aws_lb_target_group.rearc-quest-terraform-tg.arn
-  target_id = aws_instance.rearc-quest-terraform.id
-  port = 80
+  target_group_arn  = aws_lb_target_group.rearc-quest-terraform-tg.arn
+  target_id         = aws_instance.rearc-quest-terraform.id
+  port              = 80
 }
 
 resource "aws_lb_target_group_attachment" "rearc-quest-terraform-tga-3000" {
-  target_group_arn = aws_lb_target_group.rearc-quest-terraform-tg-3000.arn
-  target_id = aws_instance.rearc-quest-terraform.id
-  port = 3000
+  target_group_arn  = aws_lb_target_group.rearc-quest-terraform-tg-3000.arn
+  target_id         = aws_instance.rearc-quest-terraform.id
+  port              = 3000
+}
+
+resource "aws_lb_target_group_attachment" "rearc-quest-terraform-tga-3000" {
+  target_group_arn  = aws_lb_target_group.rearc-quest-terraform-tg-433.arn
+  target_id         = aws_instance.rearc-quest-terraform.id
+  port              = 433
 }
