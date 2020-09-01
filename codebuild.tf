@@ -54,6 +54,11 @@ resource "aws_codebuild_project" "rearc-quest-terraform-cb" {
         image                       = "aws/codebuild/standard:1.0"
         type                        = "LINUX_CONTAINER"
         image_pull_credentials_type = "CODEBUILD"
+
+        environment_variable {
+            name  = "REARC-QUEST-TERRAFORM-REPO"
+            value = aws_ecr_repository.rearc-quest-terraform-ecr.repository_url
+        }
     }
 
     source {
