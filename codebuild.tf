@@ -35,7 +35,10 @@ resource "aws_iam_role_policy" "rearc-quest-terraform-policy" {
         "ecr:GetAuthorizationToken",
         "ecr:InitiateLayerUpload",
         "ecr:PutImage",
-        "ecr:UploadLayerPart"
+        "ecr:UploadLayerPart",
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup",
+        "logs:PutLogEvents"
       ]
     }
   ]
@@ -59,9 +62,11 @@ resource "aws_codebuild_project" "rearc-quest-terraform-cb" {
         image_pull_credentials_type = "CODEBUILD"
 
         environment_variable {
-            name  = "REARC-QUEST-TERRAFORM-REPO"
+            name  = "REARC_QUEST_TERRAFORM_REPO"
             value = aws_ecr_repository.rearc-quest-terraform-ecr.repository_url
         }
+
+        privileged_mode = true
     }
 
     source {
@@ -70,5 +75,7 @@ resource "aws_codebuild_project" "rearc-quest-terraform-cb" {
         git_clone_depth = 1
         buildspec = "buildspec.yml"
     }
+
+    source_version = "master"
 
 }

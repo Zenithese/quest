@@ -5,18 +5,48 @@ phases:
         commands:
             - echo logging in to AWS ECR...
             - $(aws ecr get-login --no-include-email --region us-east-1)
+            - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+            - IMAGE_TAG=${COMMIT_HASH:=latest}
  
     build:
         commands:
             - echo build Docker image on `date`
-            - docker build -t rearc-quest-terraform:latest .
-            - docker tag rearc-quest-terraform:latest $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
+            - docker build -t $REARC_QUEST_TERRAFORM_REPO:latest .
+            - docker tag $REARC_QUEST_TERRAFORM_REPO:latest $REARC_QUEST_TERRAFORM_REPO:$IMAGE_TAG
 
     post_build:
         commands:
             - echo build Docker image complete `date`
             - echo push latest Docker images to ECR...
-            - docker push $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
+            - docker push $REARC_QUEST_TERRAFORM_REPO:latest
+            - docker push $REARC_QUEST_TERRAFORM_REPO:$IMAGE_TAG
+
+# phases:
+#     pre_build:
+#         commands:
+#             - echo logging in to AWS ECR...
+#             - $(aws ecr get-login --no-include-email --region us-east-1)
+ 
+#     build:
+#         commands:
+#             - echo build Docker image on `date`
+#             - docker build -t rearc-quest-terraform:latest .
+#             - docker tag rearc-quest-terraform:latest $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
+
+#     post_build:
+#         commands:
+#             - echo build Docker image complete `date`
+#             - echo push latest Docker images to ECR...
+#             - docker push $REARC-QUEST-TERRAFORM-REPO/rearc-quest-terraform:latest
+
+# phases:
+#   build:
+#     commands:
+#       - echo Build started on `date`
+
+#   post_build:
+#     commands:
+#       - echo Build completed on `date`
 
 #env:
   #variables:
