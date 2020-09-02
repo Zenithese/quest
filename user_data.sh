@@ -3,10 +3,9 @@ cd home/ec2-user/
 sudo yum -y update
 sudo yum -y install git
 sudo yum -y install httpd
-cd ../../etc/httpd/conf
-rm httpd.conf
-wget https://raw.githubusercontent.com/Zenithese/quest/master/httpd.conf
-cd
+cd ../../etc/httpd/conf/
+sudo sed -i '43i\Listen 433\' httpd.conf
+cd ../../../home/ec2-user/
 sudo service httpd start
 sudo yum -y install docker
 sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null
