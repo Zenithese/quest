@@ -26,8 +26,13 @@ resource "aws_lb_listener" "rearc-quest-terraform-lb-listener" {
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.rearc-quest-terraform-tg.arn
+    type = "redirect"
+
+    redirect {
+      port        = "3000"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
@@ -39,8 +44,13 @@ resource "aws_lb_listener" "rearc-quest-terraform-lb-listener-433" {
   certificate_arn   = aws_acm_certificate.zenithese.arn
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.rearc-quest-terraform-tg.arn
+    type = "redirect"
+
+    redirect {
+      port        = "3000"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
