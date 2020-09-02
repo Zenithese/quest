@@ -14,4 +14,4 @@
 #####   5) Run ``aws elbv2 describe-load-balancers`` and find, copy, and paste the DNSName that begins with "rearc-quest-terraform-lb-" into your search bar
 #####   6) Feel the force!
 #####   7) Run ``terraform destroy`` to shut down and delete the server and resources
-#####   8) Visit ``zenithese.com`` to experience true tls (contact me if the you are unable to visit the site as I may have shut down the server to save some money and resources)
+#####   8) Visit ``zenithese.com`` to experience true tls (contact me if you are unable to visit the site as I may have shut down the server to save some money and resources)
